@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,10 +13,12 @@ namespace LibSys.Controllers
     public class CategoryController : ControllerBase
     {
        private readonly ICategoryService _categoryService;
+      private readonly IStringLocalizer<CategoryController> _localizer;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(ICategoryService categoryService, IStringLocalizer<CategoryController> localizer)
         {
             _categoryService = categoryService;
+            _localizer = localizer;
         }
 
         // GET: api/<CategoryController>
@@ -45,6 +48,7 @@ namespace LibSys.Controllers
         public ActionResult<ServiceResponse<List<GetCategoryDto>>> UpdateBook(UpdateCategoryDto updatedCategory)
         {
             var response = _categoryService.UpdateCategory(updatedCategory);
+            response.Message = _localizer["ErrorMessage"];
             if (response.Data is null) 
             {
                 return NotFound(response);
